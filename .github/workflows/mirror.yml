@@ -1,0 +1,19 @@
+name: Mirror termux.com
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror repository
+        run: |
+          git clone --mirror https://github.com/termux/termux.com.git
+          cd termux.com.git
+          git remote rm origin
+          git remote add origin https://${{ secrets.SYNC_TERMUX_COM_TOKEN }}@github.com/nssuwan186-dev/termux.com.git
+          git push origin '+refs/heads/*:refs/heads/*'
+          git push origin '+refs/tags/*:refs/tags/*'
